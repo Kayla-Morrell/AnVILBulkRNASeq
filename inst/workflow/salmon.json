@@ -1,0 +1,11 @@
+{
+    "salmon.transcriptome_fasta": "athal.fa.gz",
+    "salmon.transcriptome_index_name": "athal_index",
+    "salmon.fastqs_1": [
+        "DRR016125_1.fastq.gz"
+    ],
+    "salmon.fastqs_2": [
+        "DRR016125_2.fastq.gz"
+    ],
+    "quant_name": "my_quant"
+}
