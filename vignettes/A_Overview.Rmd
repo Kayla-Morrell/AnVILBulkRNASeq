@@ -17,3 +17,20 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(AnVILBulkRNASeq)
 ```
+
+# Overview
+
+The goal of this workflow is to demonstrate to the user how to utilize AnVIL for 
+a typical `DESeq2` analysis. First, FASTQ files will be obtained from an online 
+resource and quantified using Salmon. This quantification will be done through 
+the AnVILBulkRNASeq workflow in the DESeq2 workspace on AnVIL. The output from 
+the quantification will then be analyzed with `DESeq2`. This analysis is already 
+planned out in the vignette for the package. All steps, along with any 
+intermediate ones, will be outlined in various Jupyter notebooks located in 
+the DESeq2 workspace. The following are the notebooks that are provided:
+
+* A_Overview: An overview of what will be accomplished in this workspace.
+* B_OrganizingData: Downloading an example dataset and where to store it.
+* C_RunningTheWorkflow: How to run the AnVILBulkRNASeq workflow on example data.
+* D_ManagingTheWorkflowOutput: Obtaining the output from the workflow.
+* E_DESeq2Analysis: Analyzing and visualizing the workflow output data.
