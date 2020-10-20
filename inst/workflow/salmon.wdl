@@ -8,7 +8,7 @@ task salmon_index {
     }
 
     runtime {
-        docker: "combinelab/salmon:latest"
+        docker: "combinelab/salmon:1.3.0"
     }
 
     output {
@@ -34,7 +34,7 @@ task salmon_quant {
     }
 
     runtime {
-        docker: "combinelab/salmon:latest"
+        docker: "combinelab/salmon:1.3.0"
     }
 
     output {
