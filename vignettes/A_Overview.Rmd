@@ -1,5 +1,15 @@
---- title: "An Overview of AnVILBulkRNASeq"
-output: rmarkdown::html_vignette
+--- 
+title: "An Overview of AnVILBulkRNASeq"
+author:
+- name: Kayla Interdonato
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+- name: Martin Morgan
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+date: "`r Sys.Date()`"
+output: 
+    BiocStyle::html_document:
+        toc: true
+        toc_float: true
 vignette: >
   %\VignetteIndexEntry{A_Overview}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,10 +23,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(AnVILBulkRNASeq)
-```
-
 # Introduction
 
 The goal of this package is to provide users all the tools to perform a typical
@@ -25,10 +31,25 @@ files (except for raw FASTQ files) needed to complete the analysis.
 
 # Installation
 
-```{r}
+The following code will install the  latest version of `AnVILBulkRNASeq` package
+from Bioconductor.
+
+```{r install, eval = FALSE}
 if(!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("AnVILBulkRNASeq")
+```
+
+The development version is also available for install from GitHub:
+
+```{r github, eval = FALSE}
+BiocManager::install("Kayla-Morrell/AnVILBulkRNASeq")
+```
+
+Then to load `AnVILBulkRNASeq`:
+
+```{r load, message = FALSE}
+library(AnVILBulkRNASeq)
 ```
 
 # Overview
@@ -36,11 +57,11 @@ BiocManager::install("AnVILBulkRNASeq")
 There are vignettes contained in this package that will explain each step as
 well as code to be performed along the way. 
 
-* A_Overview: An overview of what will be accomplished in this workspace.
-* B_OrganizingData: Downloading an example dataset and where to store it.
-* C_RunningTheWorkflow: How to run the AnVILBulkRNASeq workflow on example data.
-* D_ManagingTheWorkflowOutput: Obtaining the output from the workflow.
-* E_DESeq2Analysis: Analyzing and visualizing the workflow output data.
+* *A_Overview*: An overview of what will be accomplished in this workspace.
+* *B_OrganizingData*: Downloading an example dataset and where to store it.
+* *C_RunningTheWorkflow*: How to run the AnVILBulkRNASeq workflow on example data.
+* *D_ManagingTheWorkflowOutput*: Obtaining the output from the workflow.
+* *E_DESeq2Analysis*: Analyzing and visualizing the workflow output data.
 
 Each of the above vignettes corresponds to a Jupyter notebook in the
 Bioconductor-Workflow-DESeq2 workspace on AnVIL. The code will be executable
