@@ -1,20 +1,22 @@
 Package: AnVILBulkRNASeq
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+Title: Provides code and files for AnVIL workspace
+Version: 0.99.0
+Authors@R: c(
+    person("Kayla", "Interdonato", role = c("aut", "cre"), 
+        email = "kayla.morrell@roswellpark.org"),
+    person("Martin", "Morgan", role = "aut"))
+Description: This package provieds tools and files for performing a DESeq2 type
+    analysis utilizing AnVIL. There are vignettes in this package that
+    correspond to Jupyter notebooks in AnVIL. Each vignette will walk the user
+    through a specific part of the process from obtaining raw data, to running
+    an AnVIL workflow, to performing the DESeq2 analysis.
+License: Artistic-2.0
 Encoding: UTF-8
-LazyData: true
+LazyData: false
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
+    BiocStyle,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
