@@ -1,6 +1,15 @@
 ---
-title: "B_OrganizingData"
-output: rmarkdown::html_vignette
+title: "Organizing Data for AnVIL Workflow"
+author:
+- name: Kayla Interdonato
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+- name: Martin Morgan
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_float: true
 vignette: >
   %\VignetteIndexEntry{B_OrganizingData}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,6 +23,100 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
+
+This vignette will walk the user through how to download the example dataset
+that will be used for the analysis. Once it's downloaded we will show where the
+data needs to be stored in order for the workflow to be able to locate it.
+
+# Installation
+
+The previous vignette [An Overview of AnVILBulkRNASeq](A_Overview.html)
+demonstrates how to install the package. Refer to that vignette for installation
+steps. The following command will load the package.
+
 ```{r setup}
 library(AnVILBulkRNASeq)
+```
+
+# Using AnVIL
+
+There is a package in Bioconductor that will provide all the necessary
+functionality for communicating to the Google Bucket storage as well as the
+AnVIL workspace. This package is named `r Biopkg("AnVIL")`. The first step will
+be to install this package so we can use it's functions. To be sure we are using
+the latest version of the package, we will download it from the Bioconductor
+GitHub.
+
+```{r AnVIL_install}
+pkgs = "Bioconductor/AnVIL"
+BiocManager::install(pkgs)
+```
+
+Then we will load the package:
+
+```{r load_AnVIL}
+suppressPackageStartupMessages({
+    library(AnVIL)
+})
+```
+
+# Download the data
+
+We will be using Arabidopsis thaliana data from Ensembl to demonstrate this
+workflow. The raw FASTA files are downloaded from Ensembl and saved to a
+compressed .gz file. This compressed file will be needed for our workflow step
+so we will copy the file to the available Google bucket. This is where we will
+utilize `AnVIL`'s `gstuil_cp` function.
+
+```{r download_fasta}
+download.file("ftp://ftp.ensemblgenomes.org/pub/plants/release-28/fasta/arabidopsis_thaliana/cdna/Arabidopsis_thaliana.TAIR10.28.cdna.all.fa.gz",
+"athal.fa.gz")
+AnVIL::gsutil_cp("athal.fa.gz", AnVIL::avbucket())
+unlink("athal.fa.gz")
+```
+
+Along with the compressed .gz file, the worflow step will also need the sample
+specific paired FASTA files. These must be downloaded and made available on the
+Google bucket.
+
+```{r download_pairs}
+base_url_1 =
+"ftp://ftp.sra.ebi.ac.uk/vol1/fastq/DRR016/DRR0161%s/DRR0161%s_1.fastq.gz"
+base_url_2 =
+"ftp://ftp.sra.ebi.ac.uk/vol1/fastq/DRR016/DRR0161%s/DRR0161%s_2.fastq.gz"
+
+urls1 = sprintf(base_url_1, 25:40, 25:40)
+urls2 = sprintf(base_url_2, 25:40, 25:40)
+
+lapply(seq_along(urls1), function(x) {
+    download.file(urls1[x], basename(urls1[x]))
+    download.file(urls2[x], basename(urls2[x]))
+})
+
+lapply(25:40, function(x) {
+    AnVIL::gsutil_cp(paste0("DRR0161",x,"_*.fastq.gz"),
+        file.path(AnVIL::avbucket(), "data", paste0("DRR0161",x))
+    )
+})
+```
+
+# Metadata file
+
+We provide the corresponding metadata.csv for this sample dataset, but it should
+be used as an example. When working through these vignettes, the Google bucket
+addresses will be different for each user. The user will need to copy the Google
+bucket address for the `fastq_1` and `fastq_2` files and add them to the
+metadata file for their own samples. We will read in our metadata.csv that
+already has the proper Google bucket locations added to it.
+
+```{r metadata}
+fl <- system.file("extdata", "metadata.csv", package = "AnVILBulkRNASeq")
+tbl <- read.csv(fl)
+```
+
+# Session Information
+
+```{r}
+sessionInfo()
 ```
