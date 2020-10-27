@@ -19,7 +19,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -43,7 +44,7 @@ library(AnVILBulkRNASeq)
 
 There is a package in Bioconductor that will provide all the necessary
 functionality for communicating to the Google Bucket storage as well as the
-AnVIL workspace. This package is named `r Biopkg("AnVIL")`. The first step will
+AnVIL workspace. This package is named `r Biocpkg("AnVIL")`. The first step will
 be to install this package so we can use it's functions. To be sure we are using
 the latest version of the package, we will download it from the Bioconductor
 GitHub.
@@ -115,8 +116,45 @@ fl <- system.file("extdata", "metadata.csv", package = "AnVILBulkRNASeq")
 tbl <- read.csv(fl)
 ```
 
+## Pushing a local metadata file
+
+Perhaps you have your own local metadata.csv file that you would like to
+push/upload up to the Google bucket for the workflow. You can do this but will
+need to do some initial set up. The gcloud SDK will need to be installed and the
+`r Biocpkg("AnVIL")` vignette, section 2.3 Local use will explain how to do
+this. Once the gcloud SDK is installed, the environment variable is defined, and
+the installation is tested you can use the following code to push the
+metadata.csv file to the cloud.
+
+```{r local}
+## set the workspace name
+avworkspace_name("Bioconductor-Workflow-DESeq2")
+
+## save the location of the available bucket
+src <- avbucket()
+
+## read in the local copy
+## and reformat (not sure if this step is necessary)
+dat <- read.csv("/Users/ka36530_ca/AnVILBulkRNASeq/inst/extdata/metadata.csv")
+tbl <- tibble(dat)
+tbl <- tbl %>% mutate(condition = as.factor(condition), type = as.factor(type))
+
+## then import the tibble into the bucket
+tbl %>% avtable_import()
+```
+
+If you go to the Data tab under the corresponding AnVIL workspace than you
+should see the updated table, in our case it is the participant table.
+
+# Next steps
+
+Now that the data is downloaded and in it's proper location the next vignette
+will walk through how to run the workflow that will quantify the raw fasta files
+using Salmon.
+
+
 # Session Information
 
-```{r}
+```{r, eval = TRUE}
 sessionInfo()
 ```
