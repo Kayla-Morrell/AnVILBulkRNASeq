@@ -1,6 +1,15 @@
 ---
-title: "D_ManagingWorkflowOutput"
-output: rmarkdown::html_vignette
+title: "Managing the Workflow Output"
+author:
+- name: Kayla Interdonato
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+- name: Martin Morgan
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_float: true
 vignette: >
   %\VignetteIndexEntry{D_ManagingWorkflowOutput}
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,9 +19,22 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
+
+# Introduction
+
+This vignette will walk through managing the output data from the workflow that
+was run in the previous vignette [Running the Workflow Within
+AnVIL](C_RunningTheWorkflow.html).
+
+# Installation
+
+How to install the `AnVILBulkRNASeq` package is show in the first vignette [An
+Overview of AnVILBulkRNASeq](A_Overview.html). Refer to that vignette for
+installation steps. The following command will load the package.
 
 ```{r setup}
 library(AnVILBulkRNASeq)
