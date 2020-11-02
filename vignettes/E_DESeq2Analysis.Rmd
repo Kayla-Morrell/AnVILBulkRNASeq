@@ -1,6 +1,15 @@
 ---
-title: "E_DESeq2Analysis"
-output: rmarkdown::html_vignette
+title: "DESeq2 Analysis"
+author:
+- name: Kayla Interdonato
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+- name: Martin Morgan
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+date: "`r Sys.Date()`"
+output: 
+    BiocStyle::html_document:
+        toc: true
+        toc_float: true
 vignette: >
   %\VignetteIndexEntry{E_DESeq2Analysis}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,6 +23,81 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
+
+This vignette will walk you through how to run a full `DESeq2` analysis on the
+output data from the `AnVILBulkRNASeq` workflow. The output data should have
+been retrieved in the previous vignette [Managing the Workflow
+Output](D_ManagingWorkflowOutput.html).
+
+# Installation
+
+How to install the `AnVILBulkRNASeq` package is shown in the first vignette [An
+Overview of AnVILBulkRNASeq](A_Overview.html). Refer to that vignette for
+installation steps. The following command will load the package.
+
 ```{r setup}
 library(AnVILBulkRNASeq)
+```
+
+# Creating the `DESeq2` dataset
+
+The files that are needed for the `DESeq2` analysis are the `quant.sf` files for
+each sample. We create the path to those files (for each sample) and save them
+to `files`.
+
+```{r paths}
+files_path <- paste0(getwd(), "/DRR0161%s_1/quant.sf")
+files <- sprintf(files_path, 25:40)
+```
+
+A txdb object is needed for the analysis so we download the GTF file associated
+with Arabidopis thaliana and run `makeTxDbFromGFF()` on the downloaded file.
+
+```{r txdb}
+download.file("ftp://ftp.ensemblgenomes.org/pub/plants/release-28/gtf/arabidopsis_thaliana/Arabidopsis_thaliana.TAIR10.28.gtf.gz",
+"Arabidopsis_thaliana.TAIR10.28.gtf.gz")
+
+txdb <- makeTxDbFromGFF(file = "Arabidopsis_thaliana.TAIR10.28.gtf.gz")
+txdb
+```
+
+We must then create a mapping between the 'TXNAME' and 'GENEID' for Arabidopsis
+thaliana. This is then saved as the `tx2gene` variable for the later analysis.
+
+```{r mapping}
+k <- keys(txdb, keytype = "TXNAME")
+tx2gene <- select(txdb, k, "GENEID", "TXNAME")
+head(tx2gene)
+```
+
+The `tximport` function is run on the files to obtain a matrix for each sample
+that contains abundance, counts, and length. This `txi` object will be used in
+the later analysis.
+
+```{r tximport}
+names(files) <- sprintf("DRR0161%s", 25:40)
+txi <- tximport(files, type = "salmon", tx2gene = tx2gene)
+
+tbl <- avtable('participant')
+samples <- tbl[,c('name', 'condition', 'type')]
+samples
+```
+
+# Running `DESeq2`
+
+Now that we have all the necessary data we are able to run the `DESeq2`
+functions. `DESeqDataSetFromTximport()` will be the function used since we used
+`tximport()` to obtain the necessary data.
+
+```{r deseq2}
+ddsTxi <- DESeqDataSetFromTximport(txi,
+    colData = samples,
+    design = ~ type + condition)
+```
+
+# Sesion Information
+
+```{r eval = TRUE}
+sessionInfo()
 ```
