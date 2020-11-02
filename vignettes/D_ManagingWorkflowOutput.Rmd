@@ -39,3 +39,45 @@ installation steps. The following command will load the package.
 ```{r setup}
 library(AnVILBulkRNASeq)
 ```
+
+# Obtain paths of output
+
+In order to run the `DESeq2` analysis in the next vignette, we must locate the
+data that was the output from the `AnVILBulkRNASeq` workflow. The following code
+will utilize functions from the `AnVIL` package to return the output paths.
+
+```{r paths}
+library(AnVIL)
+gs_paths <- avworkflow_jobs() %>% 
+    head(1) %>% 
+    avworkflow_files() %>%
+    filter(startsWith(.data$file, "DRR")) %>% 
+    pull(path)
+```
+
+`avworkflow_jobs()` will locate the list of jobs run on the AnVIL workspace.
+The last job is grabbed using `head(1)`, then the files associated with that job
+are listed using `avworkflow_files()`. We know that our samples files all have
+"DRR" in the names so we use `filter(startsWith(.data$file, "DRR"))` to filter
+out the files that start with "DRR". Then we use `pull(path)` to pull out the
+paths where the output data was saved on the Google bucket.
+
+With these paths, we can then copy the output tarballs to the current workspace
+and untar them. Again, we will utilize functionality from `AnVIL` to achieve
+this.
+
+```{r untar}
+AnVIL::gsutil_cp(gs_paths, getwd())
+
+file_list <- basename(gs_paths)
+lapply(seq_along(length(file_list)), function(x) untar(file_list[x]))
+```
+
+Now we have files for each sample that contains the necessary output files to
+perform the `DESeq2` analysis on.
+
+# Session Information
+
+```{r, eval = TRUE}
+sessionInfo()
+```
