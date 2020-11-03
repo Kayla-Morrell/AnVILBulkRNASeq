@@ -1,0 +1,153 @@
+---
+title: "Cleaning up Data on the AnVIL Workspace"
+author:
+- name: Kayla Interdonato
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+- name: Martin Morgan
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_float: true
+vignette: >
+  %\VignetteIndexEntry{F_DataCleanUp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction 
+
+This vignette will explain some of the ways you can clean up data in an AnVIL
+workspace from your local computer. This vignette will use many functions from
+the Bioconductort `r Biocpkg("AnVIL")`. In order for these commands to work
+locally we assume that gcloud SDK is installed. If you need help with this,
+please refer to the `AnVIL` package vignette for installation steps.
+
+# Installation
+
+The first vignette [An Overview of AnVILBulkRNASeq](A_Overview.html) shows how
+to install the `AnVILBulkRNASeq` package. Refer back to vignette if package is
+not installed. The following command will load the package.
+
+```{r setup}
+library(AnVILBulkRNASeq)
+```
+
+The vignette [Running the Workflow Within AnVIL](C_RunningTheWorkflow.html)
+explains how to install the `AnVIL` package. If you need help installing, please
+refer to that vignette. We will now load the `AnVIL` package.
+
+```{r anvil}
+library(AnVIL)
+```
+
+# Setting up the workspace
+
+The first step is to make sure that the proper workspace is being used. We
+define our workspace using the `avworkspace` function.
+
+```{r workspace}
+avworkspace("bioconductor-rpci-anvil/Bioconductor-Workflow-DESeq2")
+avworkspace_namespace()
+avworkspace_name()
+```
+
+# Cleaning up data 
+
+There may be times where incorrect data is saved in the tables, tables are made
+in error, or data sets need to be deleted / created. We will walk through each
+of these scenarios below and how you can rectify them using functions from
+`AnVIL`.
+
+## Deleting information from a table
+
+While creating our `participant` table, an entry was added in error as well as
+some extra columns. We tried to create the proper table and import it using
+`avtable_import()` but the incorrect entry was never deleted. `AnVIL` has a
+function `avtable_delete_values()` that will help get rid of any unnecessary
+entries. We will demonstrate this function below.
+
+```{r delete}
+avtables()
+tbl <- avtable("participant")
+```
+
+First we can filter out the extra columns `fastq1` and `fastq2` since we were
+looking for `fastq_1` and `fastq_2`.
+
+```{r filter_columns}
+tbl <- tbl %>% filter(!is.na(files)) %>% select(-c("fastq1", "fastq2"))
+```
+
+It's important to note that when we ran `avtable` the first column got renamed
+to `name` and we need it to be `participant` or else when we import it a table
+`name` will be created.
+
+```{r rename}
+tbl <- tbl %>% rename(participant = "name")
+```
+
+Now that we have the proper columns we can delete the unneeded entry
+'DRR015126' and import the clean table.
+
+```{r delete}
+avtable_delete_values("participant", "DRR015126")
+avtable_import(tbl)
+```
+
+It's important to note that if the value being deleted is in any other tables or
+sets, the value will not be deleted. In our examples, 'DRR015126' was in some
+sets so the sets had to be deleted (since they were not needed) and then the
+single entry in the `participant` table could be deleted. See further section on
+how to delete entire sets.
+
+## Deleting tables
+
+When working with the workflow, a `name` table was made in error (due to the
+fact that `avtable()` renames the `participant` column to `name`). We want to
+delete any unnecessary tables so there are only tables that we need in the
+workspace. The following will demonstrate how to delete entire tables.
+
+We will take the `name` table, pull out all the name values from it, and delete
+them from the table. An empty table will not show in the AnVIL workspace.
+
+```{r delete_table}
+value <- avtable("name") %>% pull(name)
+avtable_delete_values("name", value)
+```
+
+## Working with sets
+
+We will first demonstrate how to delete entire sets from the workspace. This is
+done in a similar manner as when deleting values from a table.
+
+```{r delete_sets}
+avtable_delete_values("participant_set", "salmon_quant_2020-09-23T12-45-29")
+```
+
+Instead of providing the table name and value to be deleted, to delete a set you
+must provide the set name and the set id that should be deleted.
+
+Now to create a set you must use the `avtable_import_set` function. We will
+create a `participant_set` using the participants from the `participant` table.
+This set is what will be used when running the `AnVILBulkRNASeq` workflow.
+
+```{r import_set}
+avtable("participant") %>% 
+    mutate(set = "participant_set") %>% 
+    avtable_import_set("participant", "set", "name")
+```
+
+# Session Information
+
+```{r, eval = TRUE}
+sessionInfo()
+```
