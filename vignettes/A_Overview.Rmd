@@ -62,6 +62,7 @@ well as code to be performed along the way.
 * *C_RunningTheWorkflow*: How to run the AnVILBulkRNASeq workflow on example data.
 * *D_ManagingTheWorkflowOutput*: Obtaining the output from the workflow.
 * *E_DESeq2Analysis*: Analyzing and visualizing the workflow output data.
+* *F_DataCleanUp*: Once data is in the workspace, how to clean up any unwanted data.
 
 Each of the above vignettes corresponds to a Jupyter notebook in the
 Bioconductor-Workflow-DESeq2 workspace on AnVIL. The code will be executable
