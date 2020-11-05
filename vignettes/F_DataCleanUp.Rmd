@@ -75,7 +75,7 @@ some extra columns. We tried to create the proper table and import it using
 function `avtable_delete_values()` that will help get rid of any unnecessary
 entries. We will demonstrate this function below.
 
-```{r delete}
+```{r grab_table}
 avtables()
 tbl <- avtable("participant")
 ```
@@ -98,7 +98,7 @@ tbl <- tbl %>% rename(participant = "name")
 Now that we have the proper columns we can delete the unneeded entry
 'DRR015126' and import the clean table.
 
-```{r delete}
+```{r delete_values}
 avtable_delete_values("participant", "DRR015126")
 avtable_import(tbl)
 ```
