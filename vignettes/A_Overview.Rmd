@@ -25,13 +25,13 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-The goal of this package is to provide users all the tools to perform a typical
-`DESeq2` analysis utilizing AnVIL. The `AnVILBulkRNASeq` package contains all
-files (except for raw FASTQ files) needed to complete the analysis. 
+The goal of the `AnVILBulkRNASeq` package is to provide users all the tools to
+perform a typical `DESeq2` analysis utilizing AnVIL. This package contains all
+files (except for raw FASTQ files) needed to complete the analysis.
 
 # Installation
 
-The following code will install the  latest version of `AnVILBulkRNASeq` package
+The following code will install the latest version of `AnVILBulkRNASeq` package
 from Bioconductor.
 
 ```{r install, eval = FALSE}
@@ -54,8 +54,8 @@ library(AnVILBulkRNASeq)
 
 # Overview
 
-There are vignettes contained in this package that will explain each step as
-well as code to be performed along the way. 
+There are vignettes contained in the package that will explain each step as well
+as provide code to be performed along the way. 
 
 * *A_Overview*: An overview of what will be accomplished in this workspace.
 * *B_OrganizingData*: Downloading an example dataset and where to store it.

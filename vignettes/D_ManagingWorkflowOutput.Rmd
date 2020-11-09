@@ -40,6 +40,18 @@ installation steps. The following command will load the package.
 library(AnVILBulkRNASeq)
 ```
 
+We will need the `AnVIL` package again for certain functionality so we will
+install and load it now.
+
+```{r install}
+pkgs = "Bioconductor/AnVIL"
+BiocManager::install(pkgs)
+
+suppressPackageStartupMessages({
+    library(AnVIL)
+})
+```
+
 # Obtain paths of output
 
 In order to run the `DESeq2` analysis in the next vignette, we must locate the
@@ -47,7 +59,6 @@ data that was the output from the `AnVILBulkRNASeq` workflow. The following code
 will utilize functions from the `AnVIL` package to return the output paths.
 
 ```{r paths}
-library(AnVIL)
 gs_paths <- avworkflow_jobs() %>% 
     head(1) %>% 
     avworkflow_files() %>%
@@ -70,7 +81,7 @@ this.
 AnVIL::gsutil_cp(gs_paths, getwd())
 
 file_list <- basename(gs_paths)
-lapply(seq_along(length(file_list)), function(x) untar(file_list[x]))
+lapply(seq_along(lengths(file_list)), function(x) untar(file_list[x]))
 ```
 
 Now we have files for each sample that contains the necessary output files to

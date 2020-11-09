@@ -40,6 +40,21 @@ installation steps. The following command will load the package.
 library(AnVILBulkRNASeq)
 ```
 
+Again, we will need functionality from `AnVIL`, as well as other packages so we
+will install and load them now.
+
+```{r install}
+pkgs = c("Bioconductor/AnVIL", "GenomicFeatures", "tximport", "DESeq2")
+BiocManager::install(pkgs)
+
+suppressPackageStartupMessages({
+    library(AnVIL)
+    library(GenomicFeatures)
+    library(tximport)
+    library(DESeq2)
+})
+``` 
+
 # Creating the `DESeq2` dataset
 
 The files that are needed for the `DESeq2` analysis are the `quant.sf` files for
@@ -93,7 +108,8 @@ functions. `DESeqDataSetFromTximport()` will be the function used since we used
 ```{r deseq2}
 ddsTxi <- DESeqDataSetFromTximport(txi,
     colData = samples,
-    design = ~ type + condition)
+    design = ~ type + condition
+ddsTxi)
 ```
 
 # Sesion Information

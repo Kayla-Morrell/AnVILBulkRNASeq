@@ -45,20 +45,22 @@ library(AnVILBulkRNASeq)
 There is a package in Bioconductor that will provide all the necessary
 functionality for communicating to the Google Bucket storage as well as the
 AnVIL workspace. This package is named `r Biocpkg("AnVIL")`. The first step will
-be to install this package so we can use it's functions. To be sure we are using
-the latest version of the package, we will download it from the Bioconductor
-GitHub.
+be to install the required packages so we can use their functions. To be sure we
+are using the latest version of the `AnVIL` package, we will download it from
+the Bioconductor GitHub.
 
 ```{r AnVIL_install}
-pkgs = "Bioconductor/AnVIL"
+pkgs = c("Bioconductor/AnVIL", "tidyverse", "dplyr") 
 BiocManager::install(pkgs)
 ```
 
-Then we will load the package:
+Then we will load the packages:
 
 ```{r load_AnVIL}
 suppressPackageStartupMessages({
     library(AnVIL)
+    library(tidyverse)
+    library(dplyr)
 })
 ```
 

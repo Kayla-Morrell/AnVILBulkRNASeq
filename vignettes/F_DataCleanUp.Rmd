@@ -46,7 +46,13 @@ explains how to install the `AnVIL` package. If you need help installing, please
 refer to that vignette. We will now load the `AnVIL` package.
 
 ```{r anvil}
-library(AnVIL)
+pkgs = c("Bioconductor/AnVIL", "dplyr")
+BiocManager::install(pkgs)
+
+suppressPackageStartupMessages({
+    library(AnVIL)
+    library(dplyr)
+})
 ```
 
 # Setting up the workspace
