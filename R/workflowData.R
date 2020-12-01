@@ -22,16 +22,17 @@ avpublish_workflow_data <- function(
     dir <- tempfile()
     dir.create(dir)
     fastqs <- file.path(dir, basename(urls))
-    idx <- grepl("^(https?|ftp)//", urls)
-    results <- Map(download.file, urls[idx], fastqs[idx])
+    idx <- grepl("^(https?|ftp)://", urls)
+    results <- Map(download.file, urls[idx], fastqs[idx], "curl") ## should method be set to "curl"?
     fastqs[!idx] <- urls[!idx]
 
     AnVIL::gsutil_cp(fastqs, file.path(AnVIL::avbucket(), "data"))
 
     ## push 'tbl' to DATA TABLE
-    .data %>% mutate(fastq1 = file.path(AnVIL::avbucket(), "data",
-        basename(urls1)), fastq2 = file.path(AnVIL::avbucket(), "data",
-        basename(urls2)))
+    .data <- .data %>% mutate(
+        fastq1 = file.path(AnVIL::avbucket(), "data", basename(urls1)), 
+        fastq2 = file.path(AnVIL::avbucket(), "data", basename(urls2))
+        )
     .data %>% avtable_import(entity = entity, namespace = namespace, name = name)
 
     ## push 'tbl_set' to DATA TABLE
