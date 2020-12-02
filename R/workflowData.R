@@ -1,3 +1,32 @@
+#' Function to download and copy data to AnVIL from specified locations
+#' @name avpublish_workflow_data
+#' @rdname avpublish_workflow_data
+#' @description \code{avpublish_workflow_data} reads in a user provided data 
+#'     frame that includes the locations of the files to be downloaded. These 
+#'     locations can include ftp, http, https, Google bucket, or local paths.
+#'     The function will then download the files from the provided locations and 
+#'     copy them to the Google bucket associated with the AnVIL workspace. It 
+#'     will also create the necessary data and data set tables neede for workflows. 
+#' @param .data The data frame to be read in.
+#' @param fastq_column1 The name of the column for the first fastq file. Default
+#'     is "fastq1_src".
+#' @param fastq_colum2 The name of the column for the second fastq file. Default 
+#'     is "fastq2_src".
+#' @param entity The name of the column that contains the sample/participant
+#'     names. Default is set to names(.data)[[1]].
+#' @param namespace The namespace of the AnVIL workspace. Default is set to 
+#'     avworkspace_namespace().
+#' @param name The name of the AnVIL workspace. Default is set to 
+#'     avworkspace_name().
+#' @importFrom AnVIL avworkspace_namespace, avworkspace_name
+#' @return A .
+#' @export
+#' @examples
+#' path <- system.file("extdata", "test_tibble.csv", package = "AnVILBulkRNASeq")
+#' dat <- read.csv(path)[,-1]
+#' tbl <- tibble(dat)
+#' avpublish_workflow_data(tbl)
+
 avpublish_workflow_data <- function(
     .data, fastq_column1 = "fastq1_src", fastq_column2 = "fastq2_src", 
     entity = names(.data)[[1]], namespace = avworkspace_namespace(), 
