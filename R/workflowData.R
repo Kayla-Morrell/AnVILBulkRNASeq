@@ -6,7 +6,8 @@
 #'     locations can include ftp, http, https, Google bucket, or local paths.
 #'     The function will then download the files from the provided locations and 
 #'     copy them to the Google bucket associated with the AnVIL workspace. It 
-#'     will also create the necessary data and data set tables neede for workflows. 
+#'     will also create the necessary data and data set tables neede for 
+#'     workflows. 
 #' @param .data The data frame to be read in.
 #' @param fastq_column1 The name of the column for the first fastq file. Default
 #'     is "fastq1_src".
@@ -23,8 +24,7 @@
 #' @export
 #' @examples
 #' path <- system.file("extdata", "test_tibble.csv", package = "AnVILBulkRNASeq")
-#' dat <- read.csv(path)[,-1]
-#' tbl <- tibble(dat)
+#' tbl <- as_tibble(read.csv(path)[,-1])
 #' avpublish_workflow_data(tbl)
 
 avpublish_workflow_data <- function(
@@ -45,22 +45,31 @@ avpublish_workflow_data <- function(
     urls1 <- .data %>% pull(fastq_column1)
     urls2 <- .data %>% pull(fastq_column2)
     urls <- c(urls1, urls2)
+    bucket <- AnVIL::avbucket()  
+ 
+    ## check to see if files are already on bucket before downloading
+    present <- basename(urls) %in% basename(gsutil_ls(paste0(bucket, "/data"))) 
+    to_download <- urls[!present]
+
+    if (rlang::is_empty(to_download))
+        message("No files to be downloaded, they are already on the bucket.")
 
     ## could be files already exist in gs
     ## could copy from one bucket to another
     dir <- tempfile()
     dir.create(dir)
-    fastqs <- file.path(dir, basename(urls))
-    idx <- grepl("^(https?|ftp)://", urls)
-    results <- Map(download.file, urls[idx], fastqs[idx], "curl") ## should method be set to "curl"?
-    fastqs[!idx] <- urls[!idx]
 
-    AnVIL::gsutil_cp(fastqs, file.path(AnVIL::avbucket(), "data"))
+    fastqs <- file.path(dir, basename(to_download))
+    idx <- grepl("^(https?|ftp)://", to_download)
+    results <- Map(curl::curl_download, to_download[idx], fastqs[idx])
+    fastqs[!idx] <- to_download[!idx]
+
+    AnVIL::gsutil_cp(fastqs, file.path(bucket, "data"))
 
     ## push 'tbl' to DATA TABLE
     .data <- .data %>% mutate(
-        fastq1 = file.path(AnVIL::avbucket(), "data", basename(urls1)), 
-        fastq2 = file.path(AnVIL::avbucket(), "data", basename(urls2))
+        fastq1 = file.path(bucket, "data", basename(urls1)), 
+        fastq2 = file.path(bucket, "data", basename(urls2))
         )
     .data %>% avtable_import(entity = entity, namespace = namespace, name = name)
 
