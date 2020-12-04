@@ -52,7 +52,7 @@ avpublish_workflow_data <- function(
     to_download <- urls[!present]
 
     if (rlang::is_empty(to_download))
-        message("No files to be downloaded, they are already on the bucket.")
+        stop("No files to be downloaded, they are already on the bucket.")
 
     ## could be files already exist in gs
     ## could copy from one bucket to another
