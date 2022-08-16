@@ -46,7 +46,7 @@ log into [AnVIL](https://anvil.terra.bio/#). Once logged in click on the three
 horizontal lines in the upper left hand corner and click on `Workspaces`. This
 will list all the workspaces you have access too. 
 
-![Locating Workspaces](finding_workspaces.png)
+![Locating Workspaces](images/finding_workspaces.png)
 
 We will be working on the workspace entitled `Bioconductor-Workflow-DESeq2`. In
 this workspace you will see the `Workflows` tab. This is where all the workflows
@@ -59,7 +59,7 @@ are located for this workspace.
 Clicking on the `AnVILBulkRNASeq` workflow link will bring you to the set up of
 the workflow. 
 
-![Locating Workflow](finding_workflow.png)
+![Locating Workflow](images/finding_workflow.png)
 
 `Version` should be set to `master`, the button for 'Run
 workflow(s) with inputs defined by data table' should be selected. This means
@@ -72,7 +72,7 @@ Step 1 - select `participant_set`.
 Step 2 - click `Select Data`. This will open a new window. Click the first
 option 'Create a new set from all 16 participants', then `Ok`.
 
-![Selecting the proper data](setting_up_data.png)
+![Selecting the proper data](images/setting_up_data.png)
 
 ## Selecting the inputs
 
@@ -102,7 +102,7 @@ provide the link to where the transcriptome fasta is on the Google bucket:
 the index that will part of the result of the Salmon workflow. We provide it
 with `athal_index`.
 
-![Selecting the proper inputs](setting_up_inputs.png)
+![Selecting the proper inputs](images/setting_up_inputs.png)
 
 ## Saving and running the workflow
 

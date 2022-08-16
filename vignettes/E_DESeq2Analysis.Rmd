@@ -71,7 +71,7 @@ with Arabidopis thaliana and run `makeTxDbFromGFF()` on the downloaded file.
 
 ```{r txdb}
 download.file("ftp://ftp.ensemblgenomes.org/pub/plants/release-28/gtf/arabidopsis_thaliana/Arabidopsis_thaliana.TAIR10.28.gtf.gz",
-"Arabidopsis_thaliana.TAIR10.28.gtf.gz")
+"Arabidopsis_thaliana.TAIR10.28.gtf.gz", method = "wget")
 
 txdb <- makeTxDbFromGFF(file = "Arabidopsis_thaliana.TAIR10.28.gtf.gz")
 txdb
